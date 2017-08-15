@@ -1,2 +1,1 @@
-# React-Redux
-React  Redux thunk webpack eslint
+React Webpack babel
