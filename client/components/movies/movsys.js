@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux'
 import MoviesList from './MoviesList'
-import  {loadMovs} from '../../actions/movActions'
+import  {loadMovs} from '../../actions/movActionsCreator'
 var _ = require('lodash');
+import  {getCookie } from '../common/misc'
+
 class MovSys extends Component {
 
     componentDidMount() {
@@ -32,9 +34,12 @@ class MovSys extends Component {
   }
 }
 function mapStateToProps(state, ownProps) { 
+
+    let SelMovFav = _.split(getCookie("FavMov") , "|");
+
     let result =  _.filter(state.movies.list.results, function(o) { 
-        let result1 =  _.filter([ 211672,321612],function(a){
-            return o.id === a
+        let result1 =  _.filter(SelMovFav,function(a){
+            return o.id == a
         });
         return result1.length > 0
     });

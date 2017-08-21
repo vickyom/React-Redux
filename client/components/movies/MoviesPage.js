@@ -1,6 +1,6 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import  {loadMovs,fnSortByRet,fnFilterMov} from '../../actions/movActions'
+import  {loadMovs,fnSortByRet,fnFilterMov,fnSearch} from '../../actions/movActionsCreator'
 import MoviesList from './MoviesList'
 import MovSelect from './MovSelect'
 
@@ -13,7 +13,8 @@ class MoviesPage extends React.Component {
     constructor(props){
         super(props)
         this.handleTextChange = this.handleTextChange.bind(this),
-        this.handleChange = this.handleChange.bind(this)
+        this.handleChange = this.handleChange.bind(this),
+        this.filterList = this.filterList.bind(this)
     }
     handleTextChange(event){
         // this.setState({value: event.target.value});
@@ -21,10 +22,13 @@ class MoviesPage extends React.Component {
       
      }
      handleChange(value){
-         console.log("Movies page handleChange")
-       
+        console.log("Movies page handleChange")
         this.props.dispatch(fnFilterMov(value))
     }
+    filterList(event){
+        this.props.dispatch(fnSearch(event.target.value.toLowerCase()))
+    }
+
     render() {
   
         if (this.props.hasErrored) {
@@ -39,7 +43,10 @@ class MoviesPage extends React.Component {
         }
         return (
             <div>
-                <div>
+                <div className="serachbx">
+                    <input type="text" onChange={this.filterList}/>
+                </div>
+                <div className="selfilter">
                     <select  onChange={event => this.handleTextChange(event)}>
                         <option value="">Rating</option>
                         <option value="RL">Rating Low</option>
@@ -48,7 +55,7 @@ class MoviesPage extends React.Component {
                     <MovSelect onSelectYear={this.handleChange} movYear = {this.props.year}/> 
                 </div>    
                 <div>
-                    <MoviesList  movies={this.props.movies} />
+                    <MoviesList movies={this.props.movies} />
                 </div>
             </div>
         );
@@ -58,24 +65,25 @@ class MoviesPage extends React.Component {
 
 
 function mapStateToProps(state) { 
-    console.log("mapStateToProps - - -- - - -- -- -- - ")
-    console.log(state);
     let MovData = []
-   
     // For all movies data with year filter
     if(state.movies.FilYear !=  ""){
-        let movs =  _.filter(state.movies.list.results,function(arrMovData){
+        MovData =  _.filter(state.movies.list.results,function(arrMovData){
             let intYear = arrMovData.release_date.split("-")[0]
             return intYear == state.movies.FilYear
         });
-        MovData =  movs
     }else if(state.movies.MovisSortData != ""){
+       
           MovData = state.movies.MovisSortData   
+    }else if(state.movies.MovisSearchData != ""){
+        
+         MovData = state.movies.MovisSearchData
     }else{
+        
         // For all movies data without filter
         MovData = state.movies.list.results
     }
-
+   
     return {
         movies: MovData,
         year:  state.movies.year,

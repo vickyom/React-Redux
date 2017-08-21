@@ -8,21 +8,14 @@ class MovSelect extends React.Component {
         this.handleChange = this.handleChange.bind(this)
     }
     handleChange(events){
-         console.log("Movies select handleChange")
         console.log(events.target.value);
-        //Wrong Impe
         this.props.onSelectYear(events.target.value)
     }
           
     render() {
-        // console.log("this.props === = == =   ");
-        // console.log(this.props.movYear);
-        if(this.props.movYear == undefined) {
-            return false;
-        }
-       
+ 
         return (
-            // <div>Select</div>
+ 
             <select onChange={(e) => this.handleChange(e)} className="list-group">
                 { 
                 this.props.movYear.map(yer => 
@@ -35,7 +28,7 @@ class MovSelect extends React.Component {
 
 
 MovSelect.propTypes = {  
-   year: PropTypes.array.isRequired
+   movYear: PropTypes.array.isRequired
 };
 
 export default MovSelect; 

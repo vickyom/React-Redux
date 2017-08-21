@@ -1,37 +1,14 @@
 import Api from '../api/BMSApi'
 import * as types from './actionTypes'
+import  {createCookie,getCookie } from '../components/common/misc'
 
-
-//Action for  Movies HasErrored
-export function MoviesHasErrored(bool) {
-    return {
-        type: types.MOVIE_HAS_ERRORED,
-        hasErrored: bool
-    }
-}
-
-//Action for  Movies IsLoading
-export function MoviesIsLoading(bool) {
-    return { type: types.MOVIE_IS_LOADING, bool}
-}
-//Action for load Movies Successfully
-export function loadMovSuccess(movs) {
-    return {type: types.LOAD_MOVIE_SUCCESS, movs}
-}
-
-//Action Year
-export function loadMovYearSuccess(yearData) {
-    return {type: types.LOAD_MOVIE_YEAR, yearData}
-}
-
-export function loadMovFilter(FilYear) {
-    return {type: types.LOAD_MOVIE_FILTER, FilYear}
-}
-//Sort Data
-export function sortMovies(sortDats) {
-    console.log(sortDats)
-    return {type: types.LOAD_MOVIE_SORT_ASC, sortDats}
-}
+import { MoviesHasErrored,
+         MoviesIsLoading,
+         loadMovSuccess,
+         loadMovYearSuccess,
+         loadMovFilter,
+         sortMovies,
+         fnSearchText} from './moviesAction'
 
 //Action Cretor that call API 
 export function loadMovs() {  
@@ -59,9 +36,10 @@ export function loadMovs() {
 
 // This function check the data in store
 function fnCheckState(state){
+    console.log("fnCheckState - - - - - --  -- -- ")
     const movies = state.movies
     if(movies.FilYear != "") movies.FilYear = ""
-    
+    if(movies.MovisSearchData != "") movies.MovisSearchData = ""
     let shouldFetch = true
     if ( movies.list.results && movies.list.results.length > 0  || movies.isFetching)
         shouldFetch = false
@@ -73,12 +51,30 @@ export function fnFilterMov(SelYear) {
     return loadMovFilter(SelYear);
 }
 
+
+//This function is use for search
+export function fnSearch(SearchData) {
+    return (dispatch,getState) => {
+        var updatedList =  getState();
+      
+        if(updatedList.movies.MovisSortData != "") updatedList.movies.MovisSortData = []
+
+        if(updatedList.movies.FilYea != "") updatedList.movies.FilYear="";
+            updatedList = updatedList.movies.list.results.filter(function(item){
+            return item.original_title.toLowerCase().search(SearchData) !== -1;
+            });
+        dispatch(fnSearchText(updatedList));
+    }
+}
+
+
 //This function is use to sort tha data 
 export function fnSortByRet(rat) {
-    console.log(rat);
+    
     return (dispatch,getState) => {
         const state = getState()
-        state.movies.FilYear = "";
+        state.movies.FilYear = ""
+       
         //ASC
         if (rat == "RL") {
             let sortData =  state.movies.list.results.slice().sort((first, second) => {    
@@ -94,4 +90,13 @@ export function fnSortByRet(rat) {
              dispatch(sortMovies(sortData))
         }
      }
+}
+
+//This function set the cookie
+export function fnSetFavMov(movID) {
+    if(!getCookie("FavMov").includes(movID) ){
+        let allMovID = ""
+        allMovID =  getCookie("FavMov") + '|' + movID
+        createCookie("FavMov",allMovID);
+    }
 }

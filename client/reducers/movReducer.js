@@ -1,7 +1,7 @@
 import * as types from '../actions/actionTypes';  
 // import initialState from './initialState';
 
-export default function movies(state = {list:[],year:[],FilYear:"",MovisSortData:[]}, action) {
+export default function movies(state = {list:[],year:[],FilYear:"",MovisSortData:[],MovisSearchData:[]}, action) {
     console.log("action - - - - - - - - -  - -- -  -- ")
     console.log(action)
       switch(action.type) {
@@ -21,8 +21,11 @@ export default function movies(state = {list:[],year:[],FilYear:"",MovisSortData
             return Object.assign({}, state, { MovishasErrored: action.hasErrored})            
         
         case types.LOAD_MOVIE_SORT_ASC:
-        console.log("innn------- - -- -- - - -")
             return Object.assign({}, state, { MovisSortData: action.sortDats})            
+        
+        case types.LOAD_MOVIE_SEARCH:
+          
+         return {  ...state, MovisSearchData: action.searchData }
         
         default: 
             return state;
