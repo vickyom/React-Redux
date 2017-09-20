@@ -13,9 +13,7 @@ class MovSelect extends React.Component {
     }
           
     render() {
- 
         return (
- 
             <select onChange={(e) => this.handleChange(e)} className="list-group">
                 { 
                 this.props.movYear.map(yer => 

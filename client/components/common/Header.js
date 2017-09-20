@@ -1,8 +1,5 @@
 import React from 'react'
-import { Link, IndexLink } from 'react-router'
-// import {connect} from 'react-redux';
-// import {bindActionCreators} from 'redux';
-
+import { Link } from 'react-router-dom'
 
 class Header extends React.Component {
   render() {
@@ -10,12 +7,9 @@ class Header extends React.Component {
       return (
         <div className="navbar">
             <nav>
-            <IndexLink to="/" activeClassName="active">Home</IndexLink>
-            {' | '}
-            <Link to="/movies" activeClassName="active">Movies</Link>
-            {' | '}
-            <Link to="/fav" activeClassName="active">Fav</Link>
-            {' | '}
+            <Link to="/" >Home</Link>
+            <Link to="/movies" >Movies</Link>
+            <Link to="/fav" >Fav</Link>
             </nav>
         </div>
       )

@@ -6,9 +6,10 @@ const HtmlWebpackPluginConfig = new HtmlWebpackPlugin({
 })
 
 module.exports = {
-  entry: './client/index.js',
+  entry: ['./client/index.js'],
   output: {
     path: './dist',
+    publicPath: '/',
     filename: 'index_bundle.js'
   },
   module: {
@@ -19,7 +20,9 @@ module.exports = {
   },
   devServer: {
     inline:true,
-    port: 3000
+    port: 3001,
+    historyApiFallback: true,
+    contentBase: './'
   },
   plugins: [HtmlWebpackPluginConfig]
 }

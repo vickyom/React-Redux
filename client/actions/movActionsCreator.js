@@ -8,7 +8,8 @@ import { MoviesHasErrored,
          loadMovYearSuccess,
          loadMovFilter,
          sortMovies,
-         fnSearchText} from './moviesAction'
+         fnSearchText,
+        fnAllFilter} from './moviesAction'
 
 //Action Cretor that call API 
 export function loadMovs() {  
@@ -29,6 +30,11 @@ export function loadMovs() {
                 dispatch(loadMovSuccess(movs))
                 dispatch(loadMovYearSuccess(uniqueNames))
                 dispatch(MoviesIsLoading(false))
+                 const ShowAllData = { 
+                    FilterData:"",
+                    filterType:"SHOW_ALL" 
+                }
+                dispatch(fnAllFilter(ShowAllData))
             }).catch(() => dispatch(MoviesHasErrored(true)))
         }
     }
@@ -38,8 +44,7 @@ export function loadMovs() {
 function fnCheckState(state){
     console.log("fnCheckState - - - - - --  -- -- ")
     const movies = state.movies
-    if(movies.FilYear != "") movies.FilYear = ""
-    if(movies.MovisSearchData != "") movies.MovisSearchData = ""
+   
     let shouldFetch = true
     if ( movies.list.results && movies.list.results.length > 0  || movies.isFetching)
         shouldFetch = false
@@ -48,49 +53,29 @@ function fnCheckState(state){
 
 //This function set year which is coming from onchange 
 export function fnFilterMov(SelYear) {
-    return loadMovFilter(SelYear);
+    return (dispatch,getState) => {
+                const YearData = { 
+                    FilterData:SelYear,
+                    filterType:"YEAR" 
+                }
+         dispatch(fnAllFilter(YearData))
+    }
 }
 
 
 //This function is use for search
 export function fnSearch(SearchData) {
     return (dispatch,getState) => {
-        var updatedList =  getState();
-      
-        if(updatedList.movies.MovisSortData != "") updatedList.movies.MovisSortData = []
-
-        if(updatedList.movies.FilYea != "") updatedList.movies.FilYear="";
-            updatedList = updatedList.movies.list.results.filter(function(item){
-            return item.original_title.toLowerCase().search(SearchData) !== -1;
-            });
-        dispatch(fnSearchText(updatedList));
+        const SearData = { 
+                    FilterData:SearchData,
+                    filterType:"SEARCH" 
+                }
+         dispatch(fnAllFilter(SearData))
+        // dispatch(fnSearchText(SearchData));
     }
 }
 
 
-//This function is use to sort tha data 
-export function fnSortByRet(rat) {
-    
-    return (dispatch,getState) => {
-        const state = getState()
-        state.movies.FilYear = ""
-       
-        //ASC
-        if (rat == "RL") {
-            let sortData =  state.movies.list.results.slice().sort((first, second) => {    
-                  return parseFloat(first.vote_average) - parseFloat(second.vote_average)
-            })
-            dispatch(sortMovies(sortData))
-        }
-        //DEC
-        if (rat == "RH") {
-            let sortData =  state.movies.list.results.slice().sort((first, second) => {
-                return parseFloat(second.vote_average) - parseFloat(first.vote_average)
-            })
-             dispatch(sortMovies(sortData))
-        }
-     }
-}
 
 //This function set the cookie
 export function fnSetFavMov(movID) {

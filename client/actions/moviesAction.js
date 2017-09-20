@@ -22,16 +22,8 @@ export function loadMovYearSuccess(yearData) {
     return {type: types.LOAD_MOVIE_YEAR, yearData}
 }
 
-export function loadMovFilter(FilYear) {
-    return {type: types.LOAD_MOVIE_FILTER, FilYear}
-}
-//Sort Data
-export function sortMovies(sortDats) {
-    console.log(sortDats)
-    return {type: types.LOAD_MOVIE_SORT_ASC, sortDats}
-}
-
-export function fnSearchText(searchData) {
-    // console.log(sortDats)
-    return {type: types.LOAD_MOVIE_SEARCH, searchData}
+//Commaon for all filter
+export function fnAllFilter(filterType) {
+    console.log(filterType)
+    return {type: types.LOAD_MOVIE_ALLFILTER, filterType}
 }

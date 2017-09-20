@@ -3,26 +3,42 @@ import {connect} from 'react-redux'
 import  {loadMovs,fnSortByRet,fnFilterMov,fnSearch} from '../../actions/movActionsCreator'
 import MoviesList from './MoviesList'
 import MovSelect from './MovSelect'
+import { getfilterList } from './selectors'
+import {fnAllFilter} from '../../actions/moviesAction'
 
 class MoviesPage extends React.Component {
-   
+    
     componentDidMount() {
-        //console.log("Store Dispatach Movies");
+        console.log("Store Dispatach Movies");
         this.props.dispatch(loadMovs())
     }
     constructor(props){
         super(props)
-        this.handleTextChange = this.handleTextChange.bind(this),
+        this.handleRetChange = this.handleRetChange.bind(this),
         this.handleChange = this.handleChange.bind(this),
         this.filterList = this.filterList.bind(this)
     }
-    handleTextChange(event){
-        // this.setState({value: event.target.value});
-        this.props.dispatch(fnSortByRet(event.target.value))
-      
+    handleRetChange(event){
+
+        if (event.target.value == "RL") {
+            const SortAsc = { 
+                FilterData:"",
+                filterType:"ASC" 
+            }
+         
+             this.props.dispatch(fnAllFilter(SortAsc))
+        }else{
+            const SortDsc = { 
+                FilterData:"",
+                filterType:"DES" 
+            }
+         
+            this.props.dispatch(fnAllFilter(SortDsc))
+           }
      }
-     handleChange(value){
-        console.log("Movies page handleChange")
+
+    handleChange(value){
+        console.log("Movies page year handleChange")
         this.props.dispatch(fnFilterMov(value))
     }
     filterList(event){
@@ -30,24 +46,21 @@ class MoviesPage extends React.Component {
     }
 
     render() {
-  
+        
         if (this.props.hasErrored) {
             return <p>Sorry! There was an error loading the items</p>;
         }
         if (this.props.isLoading) {
             return <p>Loading…</p>
         }
-        //Wrong Impe
-        if (this.props.movies === undefined) {
-            return <p>Loading…</p>
-        }
+
         return (
             <div>
                 <div className="serachbx">
                     <input type="text" onChange={this.filterList}/>
                 </div>
                 <div className="selfilter">
-                    <select  onChange={event => this.handleTextChange(event)}>
+                    <select  onChange={event => this.handleRetChange(event)}>
                         <option value="">Rating</option>
                         <option value="RL">Rating Low</option>
                         <option value="RH">Rating High</option>
@@ -65,30 +78,13 @@ class MoviesPage extends React.Component {
 
 
 function mapStateToProps(state) { 
-    let MovData = []
-    // For all movies data with year filter
-    if(state.movies.FilYear !=  ""){
-        MovData =  _.filter(state.movies.list.results,function(arrMovData){
-            let intYear = arrMovData.release_date.split("-")[0]
-            return intYear == state.movies.FilYear
-        });
-    }else if(state.movies.MovisSortData != ""){
-       
-          MovData = state.movies.MovisSortData   
-    }else if(state.movies.MovisSearchData != ""){
-        
-         MovData = state.movies.MovisSearchData
-    }else{
-        
-        // For all movies data without filter
-        MovData = state.movies.list.results
-    }
-   
     return {
-        movies: MovData,
+        movies: getfilterList(state),
         year:  state.movies.year,
         isLoading: state.movies.MovisLoading
     };
    
 }
+
+
 export default connect(mapStateToProps)(MoviesPage); 
