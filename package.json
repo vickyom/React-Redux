@@ -6,7 +6,8 @@
     "scripts": {
         "start": "webpack-dev-server",
         "elint": "eslint . — ext .js — ext .jsx --ignore-path .eslintignore — cache || true",
-        "heroku-postbuild": "next build"
+        "build": "react-scripts build",
+        "heroku-postbuild": "npm run build"
     },
     "dependencies": {
         "babel-polyfill": "^6.23.0",
